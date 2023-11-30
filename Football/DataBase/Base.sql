@@ -1,0 +1,67 @@
+CREATE DATABASE Plaque;
+USE Plaque;
+
+CREATE SEQUENCE seqPLaqueSolaire START WITH 1 INCREMENT BY 1;
+CREATE TABLE PlaqueSolaire (
+    idPlaqueSolaire VARCHAR(10) PRIMARY KEY DEFAULT CONCAT('PLAQUE', FORMAT(NEXT VALUE FOR seqPLaqueSolaire, '0000')),
+    puissance DOUBLE PRECISION NOT NULL
+);
+INSERT INTO PlaqueSolaire (puissance) VALUES (70000);
+
+CREATE SEQUENCE seqClasse START WITH 1 INCREMENT BY 1;
+CREATE TABLE Classe (
+    idClasse VARCHAR(10) PRIMARY KEY DEFAULT CONCAT('CLASSE', FORMAT(NEXT VALUE FOR seqClasse, '0000')),
+    nom VARCHAR(10) NOT NULL UNIQUE,
+    nombreEleve INT
+);
+
+CREATE SEQUENCE seqHistorique START WITH 1 INCREMENT BY 1;
+CREATE TABLE Historique (
+    idHistorique VARCHAR(10) PRIMARY KEY DEFAULT CONCAT('HISTOR', FORMAT(NEXT VALUE FOR seqHistorique, '0000')),
+    datee DATE NOT NULL,
+    nombreEleve INT NOT NULL
+);
+
+CREATE SEQUENCE seqEleveParJour START WITH 1 INCREMENT BY 1;
+CREATE TABLE EleveParJour(
+    idEleveParJour INT DEFAULT NEXT VALUE FOR seqEleveParJour,
+    idClasse VARCHAR(10) REFERENCES Classe(idClasse),
+    idHistorique VARCHAR(10) REFERENCES Historique(idHistorique),
+    nombreEleve INT NOT NULL,
+    journee INT NOT NULL
+);
+
+CREATE SEQUENCE seqCoupure START WITH 1 INCREMENT BY 1;
+CREATE TABLE Coupure (
+    idCoupure VARCHAR(10) PRIMARY KEY DEFAULT CONCAT('COUPUR', FORMAT(NEXT VALUE FOR seqCoupure, '0000')),
+    dateDeCoupure DATE
+);
+
+CREATE SEQUENCE seqCoupureHeure START WITH 1 INCREMENT BY 1;
+CREATE TABLE CoupureHeure(
+    idCoupureHeure INT DEFAULT NEXT VALUE FOR seqCoupureHeure,
+    idCoupure VARCHAR(10) REFERENCES Coupure(idCoupure),
+    heure TIME NOT NULL
+);
+
+CREATE SEQUENCE seqBaterie START WITH 1 INCREMENT BY 1;
+CREATE TABLE Baterie(
+    idBaterie VARCHAR(10) PRIMARY KEY DEFAULT CONCAT('BATERI', FORMAT(NEXT VALUE FOR seqBaterie, '0000')),
+    nom VARCHAR(20) NOT NULL,
+    puissance DOUBLE PRECISION NOT NULL
+);
+
+CREATE SEQUENCE seqLumiere START WITH 1 INCREMENT BY 1;
+CREATE TABLE Lumiere(
+    idLumiere VARCHAR(10) PRIMARY KEY DEFAULT CONCAT('LUMME', FORMAT(NEXT VALUE FOR seqLumiere, '0000')),
+    datee DATE NOT NULL,
+    reel INT NOT NULL DEFAULT 0
+);
+
+CREATE SEQUENCE seqLumiereHeure START WITH 1 INCREMENT BY 1;
+CREATE TABLE LumiereHeure(
+    idLumiereHeure INT DEFAULT NEXT VALUE FOR seqLumiereHeure,
+    idLumiere VARCHAR(10) REFERENCES Lumiere(idLumiere),
+    heure TIME NOT NULL,
+    intesiter INT NOT NULL
+);
